@@ -99,7 +99,10 @@ Esse comportamento está diretamente relacionado ao desbalanceamento do conjunto
 --8<-- "./docs/arvore-decisao/arvore.py"
 ```
 ## Explicação da árvore
+...
+A cor azul indica quando a decisão está puxando mais para bom (1)
 
+A cor laranja indica quando a decisão está puxando mais para ruim (0)
 
 
 
