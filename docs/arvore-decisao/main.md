@@ -89,11 +89,11 @@ Isso indica que o modelo tem ótimo desempenho na identificação de vinhos bons
 
 Esse comportamento está diretamente relacionado ao desbalanceamento do conjunto de dados, onde os vinhos bons são muito mais numerosos que os ruins. Como consequência, o modelo "aprende" a priorizar a classe majoritária (bons) e tem dificuldade em identificar a classe minoritária (ruins).
 
-## Visualizar a árvore
 
+=== "Imagem Visualizar a árvore"
 ![arvore](image/arvore.png)
 
-## Código da visualização da árvore
+=== " Código da visualização da árvore"
 
 ``` python
 --8<-- "./docs/arvore-decisao/arvore.py"
