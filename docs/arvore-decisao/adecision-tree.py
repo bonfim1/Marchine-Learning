@@ -35,7 +35,7 @@ print(df["quality"].value_counts().sort_index())
 
 # ======================
 # Criar variável alvo (target)
-# 1 = bom (quality >= 6), 0 = ruim (quality < 6)
+# 1 = bom (quality >= 5), 0 = ruim (quality < 5)
 # ======================
 df["target"] = (df["quality"] >= 5).astype(int)
 
