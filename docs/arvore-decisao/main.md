@@ -16,19 +16,19 @@ Valores ausentes: Nenhum
 Duplicatas removidas: Sim
 
 1   -  6251
+
 0   -  246
 
-## EAnalise Descritiva
-``` python
---8<-- "./docs\arvore-decisao\pandas profile.ipynb"
-```
-## Exploração dos Dados	Gráfico
+
+=== "Exploração dos Dados	Gráfico"
 ![GráficoRB](image/GráficoBR.png)
 
-## Exploração dos Dados	Código
+
+=== "Exploração dos Dados	Código"
 ``` python
 --8<-- "./docs/arvore-decisao/teste.py"
 ```
+
 ## Pré-processamento
 1-Verifica se há valores nulos.
 
@@ -38,16 +38,23 @@ Duplicatas removidas: Sim
 
 4-Divide em treino (70%) e teste (30%).
 
-## Código Pré-processamento
-
+=== "Código Pré-processamento"
 ``` python
 --8<-- "./docs/arvore-decisao/preprocessamento.py"
 ```
 ## Explicação do Pré-processamento
 Verificou-se a ausência de valores faltantes no dataset. As variáveis independentes foram selecionadas, excluindo-se quality e target. As variáveis categóricas foram codificadas por meio de dummies (one-hot encoding) para permitir a leitura pelo modelo. Por fim, o conjunto de dados foi dividido em treino (70%) e teste (30%), de forma estratificada para manter a proporção da variável alvo
 
-## Modelo Árvore de Decisão
+Foi investigada a presença de valores zero nas colunas do dataset. A análise revelou que as colunas citric acid e a variável alvo target continham valores iguais a zero.
 
+•
+Coluna citric acid: Um valor zero nesta coluna representa a ausência de ácido cítrico no vinho, o que é uma medição química válida e relevante para a análise da qualidade do vinho. Portanto, esses valores foram mantidos.
+
+•
+Coluna target: A variável target foi criada para classificar os vinhos em 'ruim' (0) e 'bom' (1). O valor zero é uma das duas classes do nosso modelo de classificação e, portanto, é essencial para o treinamento e a avaliação do mesmo.
+
+
+=== "Modelo Árvore de Decisão"
 ``` python
 --8<-- "./docs/arvore-decisao/ModeloArv.py"
 ```
@@ -67,11 +74,12 @@ Recall: mede a capacidade de identificar corretamente todos os casos da classe p
 
 F1-Score: combina precisão e recall em uma única métrica. Os valores foram satisfatórios para vinhos bons, mas menores para vinhos ruins, reforçando a dificuldade do modelo em prever a classe minoritária.
 
-## Matriz de confusão
 
-![Matriz](image/Matriz.png)
+=== "Imagem Visualizar da Matriz"
+    ![Matriz](image/Matriz.png)
+    
 
-## Código da Matriz de confusão
+=== "Código da visualização da Matriz"
 
 ``` python
 --8<-- "./docs/arvore-decisao/Matriz.py"
@@ -93,21 +101,48 @@ Isso indica que o modelo tem ótimo desempenho na identificação de vinhos bons
 
 Esse comportamento está diretamente relacionado ao desbalanceamento do conjunto de dados, onde os vinhos bons são muito mais numerosos que os ruins. Como consequência, o modelo "aprende" a priorizar a classe majoritária (bons) e tem dificuldade em identificar a classe minoritária (ruins).
 
-
 === "Imagem Visualizar a árvore"
-![arvore](image/arvore.png)
+    ![arvore](image/arvore.png)
+                                                                                                                                                            
+=== "Código da visualização da árvore"
 
-=== " Código da visualização da árvore"
+        ``` python
+        --8<-- "./docs/arvore-decisao/arvore.py"
+        ```
 
-``` python
---8<-- "./docs/arvore-decisao/arvore.py"
-```
-## Explicação da árvore
-...
-A cor azul indica quando a decisão está puxando mais para bom (1)
 
-A cor laranja indica quando a decisão está puxando mais para ruim (0)
 
+## Estrutura da Árvore
+
+•
+Nó Raiz: O nó superior da árvore é o nó raiz, que inicia o processo de tomada de decisão. Neste caso, a primeira divisão é baseada na característica volatile acidity.
+
+•
+Nós Internos: Cada nó interno (não folha) contém uma condição de teste (por exemplo, volatile acidity <= 0.39). Se a condição for verdadeira, o caminho da esquerda é seguido; caso contrário, o caminho da direita é seguido.
+
+•
+Nós Folha: Os nós folha são os nós terminais da árvore e contêm a previsão da classe (class = bom ou class = ruim). A cor dos nós (azul para 'bom' e laranja para 'ruim') indica a classe majoritária naquele nó.
+
+## Interpretação dos Nós
+
+Cada nó na árvore exibe as seguintes informações:
+
+•
+Condição de Divisão: A característica e o valor de corte usados para dividir os dados (ex: volatile acidity <= 0.39).
+
+•
+gini: O coeficiente de Gini, que mede a impureza do nó. Um valor de Gini próximo de 0 indica um nó mais puro (ou seja, a maioria das amostras pertence a uma única classe).
+
+•
+samples: O número de amostras de treinamento que atingiram aquele nó.
+
+•
+value: A contagem de amostras para cada classe ([ruim, bom]) naquele nó. Por exemplo, 
+value = [1750, 4747] significa que o nó contém 1750 amostras da classe 'ruim' e 4747 amostras 
+da classe 'bom'.
+
+•
+class: A classe majoritária no nó, que seria a previsão se a decisão terminasse ali.
 
 
 

@@ -52,6 +52,9 @@ plt.show()
 print("\nValores ausentes:")
 print(df.isnull().sum())
 
+#retirar os 0
+df = df.dropna()
+
 # Features: tirando quality e target
 X = df.drop(["quality", "target"], axis=1)
 y = df["target"]
