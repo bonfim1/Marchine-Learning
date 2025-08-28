@@ -15,9 +15,13 @@ Formato de arquivo: CSV (UTF-8)
 Valores ausentes: Nenhum
 Duplicatas removidas: Sim
 
-1    6251
-0     246
+1   -  6251
+0   -  246
 
+## EAnalise Descritiva
+``` python
+--8<-- "./docs\arvore-decisao\pandas profile.ipynb"
+```
 ## Exploração dos Dados	Gráfico
 ![GráficoRB](image/GráficoBR.png)
 
