@@ -21,10 +21,11 @@ Duplicatas removidas: Sim
 
 
 === "Exploração dos Dados	Gráfico"
-![GráficoRB](image/GráficoBR.png)
+    ![GráficoRB](image/GráficoRb.png)
 
 
 === "Exploração dos Dados	Código"
+
 ``` python
 --8<-- "./docs/arvore-decisao/teste.py"
 ```
@@ -37,6 +38,10 @@ Duplicatas removidas: Sim
 3-Converte variáveis categóricas em dummies (se tiver).
 
 4-Divide em treino (70%) e teste (30%).
+
+Tamanho treino: 4547 registros
+
+Tamanho teste: 1950 registros
 
 === "Código Pré-processamento"
 ``` python
