@@ -23,12 +23,56 @@ Duplicatas removidas: Sim
 === "Exploração dos Dados	Gráfico"
     ![GráficoRB](image/GráficoRb.png)
 
-
 === "Exploração dos Dados	Código"
 
 ``` python
 --8<-- "./docs/arvore-decisao/teste.py"
 ```
+### Distribuição da Qualidade do Vinho
+
+=== "Gráfico de Distribuição da Qualidade do Vinho"
+    ![GráficoRB](image/Distri.png)
+
+=== "Código de Distribuição da Qualidade do Vinho"
+``` python
+--8<-- "./docs/arvore-decisao/DistribuVinho.py"
+```
+
+
+É um histograma com curva KDE que mostra como as notas de qualidade se distribuem.
+
+Exemplo do gráfico:
+
+A maioria dos vinhos está entre 5 e 6 pontos.
+
+Poucos vinhos têm nota 3 ou 8+.
+
+A distribuição mostra que a maior parte dos vinhos está concentrada em notas médias (5-6). Isso ajuda a entender a base de dados e a justificar a criação da variável target binária (bom >=5, ruim <5).
+
+
+###  Correlação entre Variáveis Numéricas
+
+=== "Mapa de Correlação entre Variáveis Numéricas"
+    ![GráficoRB](image/Mapa de Correlação numerica.png)
+
+=== " Código Mapa de Correlação entre Variáveis Numéricas"
+``` python
+--8<-- "./docs/arvore-decisao/correlação.py"
+```
+
+heatmap de correlação mostra como cada variável se relaciona com as outras.
+
+Os valores variam de -1 a 1:
+
+1: correlação positiva perfeita (quando uma aumenta, a outra também aumenta)
+
+-1: correlação negativa perfeita (uma aumenta e a outra diminui)
+
+0: nenhuma correlação linear
+
+Cores mais escuras indicam maior correlação positiva.
+
+O mapa de correlação permite identificar relações lineares entre variáveis. Correlações altas podem indicar redundância de informação, enquanto correlações baixas indicam independência entre atributos.
 
 ## Pré-processamento
 1-Verifica se há valores nulos.
@@ -57,7 +101,8 @@ Coluna citric acid: Um valor zero nesta coluna representa a ausência de ácido 
 
 •
 Coluna target: A variável target foi criada para classificar os vinhos em 'ruim' (0) e 'bom' (1). O valor zero é uma das duas classes do nosso modelo de classificação e, portanto, é essencial para o treinamento e a avaliação do mesmo.
-
+ 
+Ao remove valores ausentes e separa as features (X) da variável alvo (y). Colunas categóricas são transformadas em dummies binárias e todos os dados numéricos são normalizados com StandardScaler para manter a mesma escala, garantindo que o modelo de árvore de decisão aprenda de forma eficiente.
 
 === "Modelo Árvore de Decisão"
 ``` python
@@ -83,7 +128,6 @@ F1-Score: combina precisão e recall em uma única métrica. Os valores foram sa
 === "Imagem Visualizar da Matriz"
     ![Matriz](image/Matriz.png)
     
-
 === "Código da visualização da Matriz"
 
 ``` python
@@ -106,6 +150,32 @@ Isso indica que o modelo tem ótimo desempenho na identificação de vinhos bons
 
 Esse comportamento está diretamente relacionado ao desbalanceamento do conjunto de dados, onde os vinhos bons são muito mais numerosos que os ruins. Como consequência, o modelo "aprende" a priorizar a classe majoritária (bons) e tem dificuldade em identificar a classe minoritária (ruins).
 
+### Importância das Variáveis na Árvore
+
+=== "Imagem Visualizar a árvore"
+    ![arvore](image/Importancia da variavel na Arv.png)
+                                                                                                                                                            
+=== "Código da visualização da árvore"
+
+        ``` python
+        --8<-- "./docs/arvore-decisao/importancia.py"
+        ```
+
+O gráfico mostra quais atributos mais influenciam a decisão do modelo.
+
+Cada barra representa uma variável do dataset; quanto maior a barra, mais importante ela é para classificar um vinho como bom ou ruim.
+
+Exemplo do gráfico:
+
+free sulfur dioxide e volatile acidity são as mais importantes.
+
+Variáveis como residual sugar e density têm pouca ou nenhuma importância para a árvore.
+
+O modelo identifica que a quantidade de dióxido de enxofre livre e a acidez volátil são os principais fatores que determinam se um vinho é classificado como bom ou ruim. Outras variáveis têm menor influência.
+
+
+### Árvore de Decisão
+
 === "Imagem Visualizar a árvore"
     ![arvore](image/arvore.png)
                                                                                                                                                             
@@ -114,9 +184,6 @@ Esse comportamento está diretamente relacionado ao desbalanceamento do conjunto
         ``` python
         --8<-- "./docs/arvore-decisao/arvore.py"
         ```
-
-
-
 ## Estrutura da Árvore
 
 •
@@ -151,7 +218,7 @@ class: A classe majoritária no nó, que seria a previsão se a decisão termina
 
 
 
-## Conclusão final : Relatório de Classificação 
+## Conclusão final - Relatório de Classificação 
 
 Accuracy (Acurácia): 96% → parece muito bom, mas é enganador.
 
