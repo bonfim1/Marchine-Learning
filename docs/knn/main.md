@@ -69,7 +69,7 @@ Resultado: classe minoritária (ruins) é mal identificada.
 
 
 
- ## O que mostra esse gráfico?
+ # O que mostra esse gráfico?
 
 Eixo X (horizontal) → valores de k (número de vizinhos considerados pelo algoritmo KNN).
 
