@@ -10,14 +10,14 @@ theme:
     # primary: grey
     # Light mode
     - scheme: default
-      primary: grey
+      primary: Pink
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
 
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
-      primary: grey
+      primary: Pink
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
@@ -25,14 +25,14 @@ theme:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default 
-      primary: grey
+      primary: Pink
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
 
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
-      primary: grey
+      primary: Pink
       scheme: slate
       toggle:
         icon: material/toggle-switch
@@ -134,6 +134,7 @@ extra_javascript:
 nav:
   - Home: index.md
   - Árvore de Decisão: ./arvore-decisao/main.md
+  - KNN: ./knn/main.md
   - Roteiros:
     - Roteiro 1: ./roteiro1/main.md
     - Roteiro 2: ./roteiro2/main.md
