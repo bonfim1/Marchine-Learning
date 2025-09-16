@@ -39,7 +39,7 @@ print(df.describe())
 
 # --- 1.2 Distribuição da qualidade do vinho ---
 plt.figure(figsize=(10,6))
-sns.histplot(df["quality"], bins=7, kde=True, color=cor_vinho)
+sns.countplot(x="quality", data=df, color=cor_vinho)
 plt.title("Distribuição da Qualidade do Vinho")
 plt.xlabel("Quality")
 plt.ylabel("Contagem")
@@ -134,7 +134,7 @@ plt.figure(figsize=(fig_width, fig_height))
 
 fontsize = min(10, max(5, 80 / num_nodes))
 
-tree.plot_tree(
+plot_tree(   # <-- aqui ajustei para usar plot_tree em vez de tree.plot_tree
     model,
     feature_names=X.columns,
     class_names=["ruim", "bom"],
