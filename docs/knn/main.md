@@ -2,31 +2,27 @@
 
 ## Entendimento dos Resultados do Dataset
 
-Total de registros: 6.497
+Total de registros: 6.497 vinhos (tintos e brancos).
 
-Variáveis: 12 (características físico-químicas + qualidade + tipo)
+Variáveis: 12 físico-químicas + qualidade (target).
 
-Sem valores ausentes 
+Sem valores ausentes. 
 
 ## Distribuição da variável quality
 
-A maioria dos vinhos tem notas 5 e 6 (classe intermediária).
+Maioria concentrada em notas 5 e 6.
 
-Notas muito baixas (3, 4) ou muito altas (8, 9) são raras.
+Notas baixas (3-4) e altas (8-9) são raras.
 
-- Isso mostra um desbalanceamento natural → poucas classes extremas.
+Indica forte desbalanceamento natural.
 
-## Variável alvo (target)
+## Variável alvo (target binário)
 
-Criada como binária (vinho bom = 1 e ruim = 0).
+Criada como: vinho bom (1) e ruim (0).
 
-Distribuição:
+Bons vinhos: 6.251 registros.
 
-1 (bons vinhos): 6.251 registros
-
-0 (ruins): 246 registros
-
-( fortemente desbalanceado.)
+Ruins: 246 registros.
 
 O melhor entendimento sobre o Dataset está em [Árvore de Decisão](../arvore-decisao/main.md)
 
@@ -36,56 +32,65 @@ Treino: 4.547 registros
 
 Teste: 1.950 registros
 
-Acurácia geral: 96,1%
+Acurácia geral: ~96%
+
+Relatório de Classificação
+
+Classe 0 (ruins) → Precision: ~0.38 | Recall: ~0.04 | F1: ~0.07
+Classe 1 (bons) → Precision: ~0.96 | Recall: ~1.00 | F1: ~0.98
+
+Classe 1 (bons vinhos): desempenho excelente, quase todos corretamente classificados.
+
+Classe 0 (ruins): desempenho muito baixo, modelo quase não identifica essa classe.
+
+## Distribuição da Qualidade do Vinho
+
+A maioria dos vinhos avaliados possui qualidade entre 5 e 6, evidenciando uma concentração no nível “mediano”. Isso mostra que o dataset não segue uma distribuição normal, mas sim enviesada para valores centrais. Há poucos registros de vinhos de qualidade muito baixa (3-4) ou muito alta (8-9), o que caracteriza uma base desbalanceada. Esse desbalanceamento foi tratado com técnicas de balanceamento para melhorar o desempenho dos modelos de classificação.
+
+=== "Distribuição da Qualidade do Vinho KNN Gráfico"
+    ![DistribuicaoKNN](image/DistribuicaoKNN.png)
 
 
-## Relatório de Classificação
-Classe	    Precision	Recall	    F1-score  Suporte
-0 (ruim)	  0.38	    0.04	    0.07	    74
-1 (bom)	      0.96	    1.00	    0.98	    1876
+## Mapa de Correlação
 
-Classe 1 (bons vinhos): modelo excelente, quase 100% de acertos.
+O mapa de calor mostra a relação entre as variáveis químicas do vinho e a qualidade. Observa-se que o álcool apresenta a maior correlação positiva com a qualidade, enquanto a acidez volátil está negativamente relacionada. Algumas variáveis, como enxofre total e açúcar residual, possuem correlações intermediárias. Apesar de úteis, os coeficientes de correlação são baixos, mostrando que a qualidade depende de múltiplos fatores combinados.
 
-Classe 0 (ruins): modelo tem baixa performance → acerta muito pouco.
-
-Interpretação
-
-Alta acurácia (96%) não conta toda a história, porque:
-
-O modelo está aprendendo a prever quase sempre a classe “bom”, já que ela é muito mais frequente.
-
-Isso gera alto recall e precisão para bons vinhos, mas quase ignora os ruins.
-
-Problema de desbalanceamento:
-
-Como só 3,8% dos vinhos são ruins, o modelo praticamente “desiste” de classificá-los.
-
-Resultado: classe minoritária (ruins) é mal identificada.
-
-
-=== "Gráfico de Variação do KNN"
-    ![Variação KNN](image/Vriação KNN.png)
- 
+=== "Mapa de Correlaçaõ KNN 	Gráfico"
+    ![MapaKNN ](image/MapaKNN.png)
 
 
 
- # O que mostra esse gráfico?
+## Fronteira de Decisão do KNN (t-SNE 2D)
 
-Eixo X (horizontal) → valores de k (número de vizinhos considerados pelo algoritmo KNN).
+A visualização em duas dimensões mostra como o KNN separa as classes após o balanceamento. A região verde representa vinhos classificados como positivos (classe 1), enquanto a vermelha representa os negativos (classe 0). Nota-se que há boa separação, mas também regiões de sobreposição, indicando que alguns pontos estão próximos da fronteira de decisão. Isso é esperado em datasets com variáveis correlacionadas e sem limites lineares claros.
 
-Eixo Y (vertical) → acurácia do modelo no conjunto de teste (proporção de acertos).
+=== "KNN Decision Boundary	Gráfico"
+    ![Boundary](image/Boundary.png)
 
-Cada ponto do gráfico mostra o desempenho do KNN para um valor específico de k.
 
-# Interpretação
-Para k = 1, o modelo tende a memorizar o conjunto de treino, apresentando risco de overfitting.
 
-Já em k = 2, observa-se uma queda na acurácia, evidenciando instabilidade.
+## Variação da Acurácia com o Número de Vizinhos
 
-Em valores intermediários (k entre 5 e 10), a acurácia se estabiliza em torno de 96%, representando o ponto de maior equilíbrio entre viés e variância.
+O gráfico mostra que valores baixos de k (próximos de 1 a 3) resultam em maior acurácia, chegando a quase 99%. Entretanto, conforme k aumenta, a acurácia diminui gradualmente. Isso ocorre porque valores maiores de vizinhos tornam o modelo mais “generalista”, perdendo detalhes da estrutura local dos dados. Assim, um k pequeno é mais adequado para este problema específico.
 
-Para valores maiores de k (acima de 10), o desempenho permanece estável, com acurácia próxima de 96,2%, tornando o modelo mais generalista, pois considera um número elevado de vizinhos e suaviza as diferenças entre as classes.
+=== "Variação de Acurácia KNN Gráfico"
+    ![VariacaoKNN](image/VariacaoKNN.png)
 
-## Conclusão
 
-O modelo KNN alcançou 96% de acurácia global, mas o desbalanceamento dos dados compromete a detecção da classe minoritária (vinhos ruins). Enquanto o desempenho para vinhos bons foi excelente (recall ≈ 1,00), a classe ruim apresentou métricas muito baixas (precisão 0,38, recall 0,04). Assim, o modelo é eficaz para prever vinhos bons, mas pouco confiável para identificar vinhos ruins.
+## Matriz de Confusão do KNN
+
+O modelo obteve excelente desempenho, com 1876 acertos na classe 0 e 1763 na classe 1. Apenas 112 instâncias da classe 1 foram classificadas incorretamente, sem erros na classe 0. Isso resultou em uma acurácia geral de 97%, com alta precisão e recall em ambas as classes. Esse resultado confirma que o balanceamento da base foi essencial para melhorar a performance do KNN.
+
+=== "Matriz do KNN Gráfico"
+    ![MatrizKNN](image/MatrizKNN.png)
+
+
+
+## Código do KNN
+
+=== "Code"
+```python exec="on" html="1"
+--8<-- "docs/knn/teste4.py"
+```
+
+

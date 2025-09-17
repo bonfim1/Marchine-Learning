@@ -114,11 +114,10 @@ Total sulfur dioxide
 
 Alcohol
 
-# Código da arvore de decisão
+## Código da arvore de decisão
 
 === "Code"
-
-    ```python
+```python exec="on" html="1"
 --8<-- "docs/arvore-decisao/teste4.py"
-    ```
+```
 

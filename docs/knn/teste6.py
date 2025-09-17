@@ -6,15 +6,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import kagglehub
 import os
-from sklearn.manifold import TSNE
-from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.utils import resample  # Para balanceamento
+from sklearn.utils import resample
+from sklearn.manifold import TSNE
+from matplotlib.colors import ListedColormap
+import kagglehub  # Certifique-se de estar logado no KaggleHub
 
 # -------------------------------
 # Configurações visuais
@@ -57,9 +57,18 @@ plt.title("Mapa de Correlação")
 plt.show()
 
 # -------------------------------
+# 1.3 Mapa de correlação com target
+# -------------------------------
+corr_target = numeric_df.copy()
+corr_target["target"] = (df["quality"] >= 5).astype(int)
+plt.figure(figsize=(12,8))
+sns.heatmap(corr_target.corr(), cmap="Reds", annot=True, fmt=".2f")
+plt.title("Mapa de Correlação das Features com Target")
+plt.show()
+
+# -------------------------------
 # 2. Pré-processamento
 # -------------------------------
-# Variável alvo binária: 1 = bom (quality >=5), 0 = ruim
 df["target"] = (df["quality"] >= 5).astype(int)
 df = df.dropna()
 print("\nDistribuição target original:\n", df["target"].value_counts())
@@ -79,17 +88,38 @@ df_balanced = pd.concat([df_majority, df_minority_upsampled])
 df_balanced = df_balanced.sample(frac=1, random_state=42)  # Shuffle
 print("\nDistribuição target após balanceamento:\n", df_balanced["target"].value_counts())
 
-# Separar X e y
+# -------------------------------
+# 2b. Pairplot das features principais
+# -------------------------------
+features_pairplot = ["fixed acidity", "volatile acidity", "citric acid", "residual sugar", "alcohol", "target"]
+sns.pairplot(df_balanced[features_pairplot], hue="target", palette=["darkred","darkgreen"], diag_kind="kde")
+plt.suptitle("Pairplot das Features Principais", y=1.02)
+plt.show()
+
+# -------------------------------
+# 2c. Distribuição KDE por classe
+# -------------------------------
+plt.figure(figsize=(12,6))
+sns.kdeplot(df_balanced[df_balanced["target"]==1]["alcohol"], label="Bom (1)", fill=True, color="darkgreen", alpha=0.5)
+sns.kdeplot(df_balanced[df_balanced["target"]==0]["alcohol"], label="Ruim (0)", fill=True, color="darkred", alpha=0.5)
+plt.title("Distribuição de Álcool por Classe")
+plt.xlabel("Teor de Álcool")
+plt.ylabel("Densidade")
+plt.legend()
+plt.show()
+
+# -------------------------------
+# 3. Separar X e y e normalizar
+# -------------------------------
 X = df_balanced.drop(["quality", "target"], axis=1)
 y = df_balanced["target"]
 X = pd.get_dummies(X, drop_first=True)
 
-# Normalizar
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
 # -------------------------------
-# 3. Divisão treino/teste
+# 4. Divisão treino/teste
 # -------------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.3, random_state=42, stratify=y
@@ -97,13 +127,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 print(f"Tamanho treino: {X_train.shape[0]} | teste: {X_test.shape[0]}")
 
 # -------------------------------
-# 4. Treinamento do Modelo KNN
+# 5. Treinamento do Modelo KNN
 # -------------------------------
 knn = KNeighborsClassifier(n_neighbors=5, weights='distance')
 knn.fit(X_train, y_train)
 
 # -------------------------------
-# 5. Avaliação
+# 6. Avaliação
 # -------------------------------
 y_pred = knn.predict(X_test)
 print("\nAcurácia:", accuracy_score(y_test, y_pred))
@@ -119,7 +149,7 @@ plt.ylabel("Real")
 plt.show()
 
 # -------------------------------
-# 6. Ajuste do parâmetro k
+# 7. Ajuste do parâmetro k
 # -------------------------------
 scores = []
 for k in range(1, 21):
@@ -135,7 +165,7 @@ plt.ylabel("Acurácia no teste")
 plt.show()
 
 # -------------------------------
-# 7. Visualização da Fronteira de Decisão (t-SNE 2D)
+# 8. Visualização da Fronteira de Decisão (t-SNE 2D)
 # -------------------------------
 tsne = TSNE(n_components=2, random_state=42, perplexity=30, learning_rate=200)
 X_tsne = tsne.fit_transform(X_scaled)
@@ -146,28 +176,3 @@ X_train2, X_test2, y_train2, y_test2 = train_test_split(
 
 knn2 = KNeighborsClassifier(n_neighbors=5, weights='distance')
 knn2.fit(X_train2, y_train2)
-
-x_min, x_max = X_tsne[:, 0].min() - 5, X_tsne[:, 0].max() + 5
-y_min, y_max = X_tsne[:, 1].min() - 5, X_tsne[:, 1].max() + 5
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.5),
-                     np.arange(y_min, y_max, 0.5))
-
-Z = knn2.predict(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
-
-cmap_light = ListedColormap(["#FFAAAA", "#AAFFAA"])
-cmap_bold = ["darkred", "darkgreen"]
-
-plt.figure(figsize=(10,8))
-plt.contourf(xx, yy, Z, alpha=0.3, cmap=cmap_light)
-
-sns.scatterplot(
-    x=X_train2[:, 0], y=X_train2[:, 1], hue=y_train2,
-    palette=cmap_bold, edgecolor="k", s=20, alpha=0.6
-)
-
-plt.title("KNN Decision Boundary (t-SNE 2D, Balanceado)")
-plt.xlabel("t-SNE 1")
-plt.ylabel("t-SNE 2")
-plt.show()
-
-#usar esse

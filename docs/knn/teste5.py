@@ -64,6 +64,13 @@ df["target"] = (df["quality"] >= 5).astype(int)
 df = df.dropna()
 print("\nDistribuição target original:\n", df["target"].value_counts())
 
+# Visualização da distribuição original
+sns.countplot(x=df["target"], palette=["darkred", "darkgreen"])
+plt.title("Distribuição do Target (Antes do Balanceamento)")
+plt.xlabel("Target (0 = Ruim, 1 = Bom)")
+plt.ylabel("Contagem")
+plt.show()
+
 # -------------------------------
 # 2a. Balanceamento (Oversampling)
 # -------------------------------
@@ -78,6 +85,13 @@ df_minority_upsampled = resample(df_minority,
 df_balanced = pd.concat([df_majority, df_minority_upsampled])
 df_balanced = df_balanced.sample(frac=1, random_state=42)  # Shuffle
 print("\nDistribuição target após balanceamento:\n", df_balanced["target"].value_counts())
+
+# Visualização da distribuição balanceada
+sns.countplot(x=df_balanced["target"], palette=["darkred", "darkgreen"])
+plt.title("Distribuição do Target (Após Balanceamento)")
+plt.xlabel("Target (0 = Ruim, 1 = Bom)")
+plt.ylabel("Contagem")
+plt.show()
 
 # Separar X e y
 X = df_balanced.drop(["quality", "target"], axis=1)
@@ -128,46 +142,10 @@ for k in range(1, 21):
     scores.append(modelo.score(X_test, y_test))
 
 plt.figure(figsize=(12,5))
-plt.plot(range(1,21), scores, marker="o", color=cor_vinho)
-plt.title("Variação da Acurácia com k (Balanceado)")
-plt.xlabel("Número de vizinhos (k)")
-plt.ylabel("Acurácia no teste")
+plt.plot(range(1, 21), scores, marker="o", color="darkred")
+plt.xlabel("Número de vizinhos (K)")
+plt.ylabel("Acurácia")
+plt.title("Acurácia do KNN para diferentes valores de K")
+plt.xticks(range(1, 21))
+plt.grid(True)
 plt.show()
-
-# -------------------------------
-# 7. Visualização da Fronteira de Decisão (t-SNE 2D)
-# -------------------------------
-tsne = TSNE(n_components=2, random_state=42, perplexity=30, learning_rate=200)
-X_tsne = tsne.fit_transform(X_scaled)
-
-X_train2, X_test2, y_train2, y_test2 = train_test_split(
-    X_tsne, y, test_size=0.3, random_state=42, stratify=y
-)
-
-knn2 = KNeighborsClassifier(n_neighbors=5, weights='distance')
-knn2.fit(X_train2, y_train2)
-
-x_min, x_max = X_tsne[:, 0].min() - 5, X_tsne[:, 0].max() + 5
-y_min, y_max = X_tsne[:, 1].min() - 5, X_tsne[:, 1].max() + 5
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.5),
-                     np.arange(y_min, y_max, 0.5))
-
-Z = knn2.predict(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
-
-cmap_light = ListedColormap(["#FFAAAA", "#AAFFAA"])
-cmap_bold = ["darkred", "darkgreen"]
-
-plt.figure(figsize=(10,8))
-plt.contourf(xx, yy, Z, alpha=0.3, cmap=cmap_light)
-
-sns.scatterplot(
-    x=X_train2[:, 0], y=X_train2[:, 1], hue=y_train2,
-    palette=cmap_bold, edgecolor="k", s=20, alpha=0.6
-)
-
-plt.title("KNN Decision Boundary (t-SNE 2D, Balanceado)")
-plt.xlabel("t-SNE 1")
-plt.ylabel("t-SNE 2")
-plt.show()
-
-#usar esse
