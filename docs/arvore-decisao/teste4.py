@@ -145,3 +145,4 @@ plot_tree(   # <-- aqui ajustei para usar plot_tree em vez de tree.plot_tree
 plt.tight_layout()
 plt.savefig("arvore_decisao_matplotlib.pdf", format="pdf", bbox_inches="tight")
 plt.show()
+plt.close()
