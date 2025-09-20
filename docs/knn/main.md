@@ -89,7 +89,7 @@ O modelo obteve excelente desempenho, com 1876 acertos na classe 0 e 1763 na cla
 ## Código do KNN
 
 === "Code"
-```python exec="on" html="1"
+```python 
 --8<-- "docs/knn/teste4.py"
 ```
 

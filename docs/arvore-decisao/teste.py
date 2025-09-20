@@ -45,4 +45,5 @@ print(df["target"].value_counts())
 sns.countplot(x="target", data=df)
 plt.title("Distribuição da variável alvo (0=ruim, 1=bom)")
 plt.show()
+plt.close()
 

@@ -169,5 +169,5 @@ plt.title("KNN Decision Boundary (t-SNE 2D, Balanceado)")
 plt.xlabel("t-SNE 1")
 plt.ylabel("t-SNE 2")
 plt.show()
-
+plt.close()
 #usar esse

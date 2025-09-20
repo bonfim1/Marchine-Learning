@@ -117,7 +117,7 @@ Alcohol
 ## Código da arvore de decisão
 
 === "Code"
-```python exec="on" html="1"
+```python 
 --8<-- "docs/arvore-decisao/teste4.py"
 ```
 
