@@ -95,7 +95,8 @@ O modelo apresentou acurácia de 66,1%, indicando que acerta cerca de 2 em cada 
 
 === "Distribuição após SMOTE	Gráfico"
     ![Árvore de Decisão](image/Arvor.png)
-
+    
+O SMOTE foi usado para corrigir o grande desbalanceamento entre os vinhos "bons" e "ruins" nos dados de treino. Sem ele, a árvore de decisão se tornaria tendenciosa, ignorando a classe minoritária (vinhos ruins). A técnica cria amostras sintéticas dessa classe minoritária para equilibrar o conjunto de dados. Isso força o modelo a aprender os padrões de ambas as classes de forma justa, melhorando a identificação dos casos raros.
 ## Conclusão
 
 O modelo de árvore de decisão apresentou desempenho razoável, com boa precisão, mas menor recall para vinhos ruins, indicando dificuldade em identificar corretamente essa classe minoritária.
