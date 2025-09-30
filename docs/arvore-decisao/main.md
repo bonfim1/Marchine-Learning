@@ -87,14 +87,14 @@ F1-score: 78,9%
 
 O modelo apresentou acurácia de 66,1%, indicando que acerta cerca de 2 em cada 3 casos. A precisão foi bastante elevada (97,8%), mostrando que quase todas as previsões positivas realmente pertencem à classe correta. No entanto, o recall foi moderado (66,2%), revelando que o modelo deixa de identificar parte dos casos reais. O F1-score de 78,9% indica um equilíbrio razoável, mas com desempenho mais voltado para alta precisão do que para ampla cobertura.
 
-=== "Distribuição após SMOTE	Gráfico"
-    ![Matriz de Confusão](image/Matriz.png)
+=== "Matriz de Confusão	Gráfico"
+    ![Matriz ](image/Matriz.png)
 
-=== "Distribuição após SMOTE	Gráfico"
-    ![Importância das Variáveis](image/importancia.png)
+=== "Importnância das Variáveis 	Gráfico"
+    ![importancia](image/importancia.png)
 
-=== "Distribuição após SMOTE	Gráfico"
-    ![Árvore de Decisão](image/Arvor.png)
+=== "Árvore de Decisão	Gráfico"
+    ![Arvor](image/Arvor.png)
     
 O SMOTE foi usado para corrigir o grande desbalanceamento entre os vinhos "bons" e "ruins" nos dados de treino. Sem ele, a árvore de decisão se tornaria tendenciosa, ignorando a classe minoritária (vinhos ruins). A técnica cria amostras sintéticas dessa classe minoritária para equilibrar o conjunto de dados. Isso força o modelo a aprender os padrões de ambas as classes de forma justa, melhorando a identificação dos casos raros.
 ## Conclusão

@@ -115,3 +115,8 @@ Esses números indicam que o modelo é razoavelmente bom, mas ainda com espaço 
 
 ## Conclusão final 
 O projeto mostrou que, após a exploração e o balanceamento do dataset de vinhos, foi possível construir um modelo KNN com desempenho consistente (acurácia de 73% e F1 de 0,77). As variáveis álcool e densidade se destacaram como fatores decisivos para diferenciar vinhos de melhor qualidade. A clusterização com K-Means formou dois grupos coerentes, reforçando os padrões encontrados. Mesmo com desbalanceamento inicial, o pré-processamento e a validação garantiram previsões confiáveis, oferecendo uma base sólida para aplicações na indústria vinícola e para aprimoramentos com modelos mais robustos.
+
+=== "Code"
+```python 
+--8<-- "docs/metricas/teste1.py"
+```
