@@ -91,7 +91,7 @@ O modelo apresentou acurácia de 66,1%, indicando que acerta cerca de 2 em cada 
     ![Matriz ](image/Matriz.png)
 
 === "Importnância das Variáveis 	Gráfico"
-    ![importancia](image/importancia.png)
+    ![importacia](image/importacia.png)
 
 === "Árvore de Decisão	Gráfico"
     ![Arvor](image/Arvor.png)
