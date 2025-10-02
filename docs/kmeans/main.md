@@ -62,17 +62,8 @@ A partir de 3 clusters, o desempenho piora, indicando que mais agrupamentos não
 
 
 ## Matriz de Confusão
-
-    Predito 0
-
-Real 0	_ 512	        
-
-Real 1	_ 457	      
-
-    Predito 1
-Real 0	_ 1364
-
-Real 1	_ 1418
+ [[ 512 1364]
+ [ 457 1418]]
 
 O modelo acertou alguns padrões, mas apresentou muitos falsos positivos e falsos negativos.
 
