@@ -1,137 +1,145 @@
-# =======================================
+# ============================================================
 # PROJETO: CLASSIFICAÇÃO DE VINHOS COM RANDOM FOREST
-# =======================================
+# ============================================================
 
-# --- ETAPA 1: EXPLORAÇÃO DOS DADOS ---
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import kagglehub
 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import (
-    accuracy_score, balanced_accuracy_score, classification_report,
-    confusion_matrix, ConfusionMatrixDisplay
-)
+from sklearn.model_selection import train_test_split, learning_curve
 from sklearn.ensemble import RandomForestClassifier
-from imblearn.over_sampling import SMOTE
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import plot_tree
+from sklearn.metrics import (
+    classification_report, confusion_matrix, accuracy_score
+)
 
-# -------------------------------------------------------
+# Definir paleta vinho
+paleta_vinho = ["#7B1113", "#A02C2D", "#C44B4D", "#D67B7C", "#F2A6A6"]
+
+# ============================================================
+# === ETAPA 1: EXPLORAÇÃO DOS DADOS ===
 print("\n--- ETAPA 1: EXPLORAÇÃO DOS DADOS ---")
 
-# Carregando o dataset (vermelho e branco combinados)
-red = pd.read_csv("winequality-red.csv", sep=";")
-white = pd.read_csv("winequality-white.csv", sep=";")
+print("Baixando dataset...")
+path = kagglehub.dataset_download("saeedomranpour/red-and-white-wine-quality")
+file_path = os.path.join(path, "wine_quality_merged.csv")
+df = pd.read_csv(file_path, index_col=0)
+print("Dataset carregado!\n")
 
-red["type"] = "red"
-white["type"] = "white"
+print(df.info())
+print(df.describe())
 
-data = pd.concat([red, white], axis=0)
-print(f"Linhas: {data.shape[0]} | Colunas: {data.shape[1]}")
-
-print("\nColunas disponíveis:", data.columns.tolist())
-print("\nInformações gerais:")
-print(data.info())
-
-print("\nEstatísticas descritivas:")
-print(data.describe())
-
-# Distribuição da variável "quality"
+# Distribuição da qualidade
 plt.figure(figsize=(7,4))
-sns.countplot(data=data, x="quality", hue="type")
-plt.title("Distribuição da variável qualidade por tipo de vinho")
+sns.countplot(data=df, x="quality", hue="type", palette=paleta_vinho)
+plt.title("Distribuição da qualidade por tipo de vinho")
 plt.show()
 
-# -------------------------------------------------------
-# --- ETAPA 2: PRÉ-PROCESSAMENTO ---
+# ============================================================
+# === ETAPA 2: PRÉ-PROCESSAMENTO ===
 print("\n--- ETAPA 2: PRÉ-PROCESSAMENTO ---")
 
-# Criar variável alvo binária: 1 = bom (>=7), 0 = ruim (<7)
-data["target"] = (data["quality"] >= 7).astype(int)
-print("Distribuição da variável alvo:\n", data["target"].value_counts())
+def classificar_qualidade(valor):
+    if valor <= 5:
+        return 'ruim'
+    elif valor == 6:
+        return 'médio'
+    else:
+        return 'bom'
 
-# Converter variável categórica em dummies
-data = pd.get_dummies(data, columns=["type"], drop_first=True)
-print("\nColunas finais:", data.columns.tolist())
+df['categoria'] = df['quality'].apply(classificar_qualidade)
+df = pd.get_dummies(df, columns=['type'], drop_first=True)
 
-# Selecionar features e alvo
-X = data.drop(columns=["quality", "target"])
-y = data["target"]
+X = df.drop(columns=['quality', 'categoria'])
+y = df['categoria']
 
-# Padronização
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# -------------------------------------------------------
-# --- ETAPA 3: DIVISÃO DOS DADOS ---
+# ============================================================
+# === ETAPA 3: DIVISÃO DOS DADOS ===
 print("\n--- ETAPA 3: DIVISÃO DOS DADOS ---")
 
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.3, random_state=42, stratify=y
 )
 
-print(f"Tamanho treino: {X_train.shape} | teste: {X_test.shape}")
+# ============================================================
+# === ETAPA 4: TREINAMENTO ===
+print("\n--- ETAPA 4: TREINAMENTO ---")
 
-# Balanceamento com SMOTE
-smote = SMOTE(random_state=42)
-X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
-
-print("Distribuição após SMOTE:\n", y_train_res.value_counts())
-
-# -------------------------------------------------------
-# --- ETAPA 4: TREINAMENTO DO MODELO ---
-print("\n--- ETAPA 4: TREINAMENTO DO MODELO ---")
-
-rf = RandomForestClassifier(
-    n_estimators=200,   # número de árvores
-    max_depth=10,       # profundidade máxima
-    random_state=42
+modelo = RandomForestClassifier(
+    n_estimators=200, max_depth=10, random_state=42
 )
-rf.fit(X_train_res, y_train_res)
+modelo.fit(X_train, y_train)
 
-print("Modelo Random Forest treinado com sucesso!")
+# ============================================================
+# === ETAPA 5: AVALIAÇÃO ===
+print("\n--- ETAPA 5: AVALIAÇÃO ---")
 
-# -------------------------------------------------------
-# --- ETAPA 5: AVALIAÇÃO DO MODELO ---
-print("\n--- ETAPA 5: AVALIAÇÃO DO MODELO ---")
+y_pred = modelo.predict(X_test)
 
-y_pred = rf.predict(X_test)
-
-acc = accuracy_score(y_test, y_pred)
-bal_acc = balanced_accuracy_score(y_test, y_pred)
-
-print(f"Acurácia: {acc:.4f}")
-print(f"Acurácia Balanceada: {bal_acc:.4f}")
 print("\nRelatório de Classificação:")
 print(classification_report(y_test, y_pred))
+acc = accuracy_score(y_test, y_pred)
+print(f"Acurácia: {acc:.3f}")
 
-# Matriz de confusão
+# 1️⃣ Matriz de confusão
 cm = confusion_matrix(y_test, y_pred)
-disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Ruim", "Bom"])
-disp.plot(cmap="Blues")
+plt.figure(figsize=(6,5))
+sns.heatmap(cm, annot=True, cmap="Reds", fmt='d', cbar=False,
+            xticklabels=modelo.classes_, yticklabels=modelo.classes_)
 plt.title("Matriz de Confusão - Random Forest")
+plt.xlabel("Previsto")
+plt.ylabel("Real")
 plt.show()
 
-# Importância das variáveis
-importances = pd.Series(rf.feature_importances_, index=X.columns)
-importances.sort_values(ascending=False).head(10).plot(kind="barh", figsize=(8,5))
-plt.title("Top 10 - Importância das variáveis (Random Forest)")
-plt.xlabel("Importância")
+# 2️⃣ Importância das variáveis
+importances = pd.Series(modelo.feature_importances_, index=X.columns)
+plt.figure(figsize=(8,6))
+importances.sort_values().tail(10).plot(kind="barh", color="#7B1113")
+plt.title("Top 10 - Importância das Variáveis")
 plt.show()
 
-# -------------------------------------------------------
-# --- ETAPA 6: RELATÓRIO FINAL ---
-print("\n--- ETAPA 6: RELATÓRIO FINAL ---")
+# 3️⃣ Distribuição real vs prevista
+fig, ax = plt.subplots(1,2, figsize=(10,4))
+sns.countplot(y_test, ax=ax[0], palette=paleta_vinho)
+ax[0].set_title("Distribuição Real")
+sns.countplot(y_pred, ax=ax[1], palette=paleta_vinho)
+ax[1].set_title("Distribuição Prevista")
+plt.show()
 
-print("""
-O modelo Random Forest obteve um desempenho sólido, com boa acurácia e
-boa capacidade de generalização. A variável 'alcohol' e 'sulphates'
-foram as mais relevantes para prever a qualidade dos vinhos.
-O balanceamento via SMOTE contribuiu para evitar viés nas classes.
+# 4️⃣ Curva de aprendizado
+train_sizes, train_scores, test_scores = learning_curve(
+    modelo, X_scaled, y, cv=5, scoring='accuracy'
+)
+plt.figure(figsize=(7,4))
+plt.plot(train_sizes, np.mean(train_scores, axis=1), 'o-', label="Treino", color="#7B1113")
+plt.plot(train_sizes, np.mean(test_scores, axis=1), 'o-', label="Validação", color="#A02C2D")
+plt.title("Curva de Aprendizado - Random Forest")
+plt.xlabel("Tamanho do Conjunto de Treino")
+plt.ylabel("Acurácia")
+plt.legend()
+plt.show()
 
-Possíveis melhorias:
-- Ajuste fino de hiperparâmetros (n_estimators, max_depth, min_samples_split)
-- Testar outros modelos (XGBoost, LightGBM)
-- Analisar correlação entre variáveis para reduzir multicolinearidade.
-""")
+# 5️⃣ Visualização de duas árvores do Random Forest 🌳
+estimator1 = modelo.estimators_[0]
+estimator2 = modelo.estimators_[1]
+
+plt.figure(figsize=(20,10))
+plot_tree(estimator1, filled=True, feature_names=X.columns,
+          class_names=modelo.classes_, max_depth=3, fontsize=10)
+plt.title("Árvore 1 - Random Forest")
+plt.show()
+
+plt.figure(figsize=(20,10))
+plot_tree(estimator2, filled=True, feature_names=X.columns,
+          class_names=modelo.classes_, max_depth=3, fontsize=10)
+plt.title("Árvore 2 - Random Forest")
+plt.show()
+
+
