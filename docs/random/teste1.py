@@ -1,7 +1,3 @@
-# ============================================================
-# PROJETO: CLASSIFICAÇÃO DE VINHOS COM RANDOM FOREST
-# ============================================================
-
 import os
 import pandas as pd
 import numpy as np
@@ -141,5 +137,6 @@ plot_tree(estimator2, filled=True, feature_names=X.columns,
           class_names=modelo.classes_, max_depth=3, fontsize=10)
 plt.title("Árvore 2 - Random Forest")
 plt.show()
+plt.close()
 
 
