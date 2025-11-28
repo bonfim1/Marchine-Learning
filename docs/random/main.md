@@ -143,3 +143,9 @@ Diagnóstico Final do Modelo (Overfitting) A "Curva de Aprendizado" do modelo fi
 Este padrão é a definição clássica de um modelo com alta variância, ou overfitting (sobreajuste). Embora o GridSearchCV tenha selecionado a configuração com max_depth=10 como a de melhor performance durante o tuning, o resultado é um modelo que "decorou" os dados de treino com grande eficiência, mas que possui uma capacidade de generalização substancialmente menor para dados novos e desconhecidos.
 
 Final: O trabalho produziu com sucesso um modelo Random Forest que resolveu o problema central do desbalanceamento de classe, criando um classificador especializado e eficaz na detecção de vinhos 'bons'. A análise final revela que este ganho de especialização resultou em um modelo complexo, que demonstra um claro comportamento de sobreajuste aos dados de treinamento.
+
+## Código
+=== "Code"
+```python 
+--8<-- "docs/random/teste2.py"
+```

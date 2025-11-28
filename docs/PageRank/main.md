@@ -152,3 +152,9 @@ A variável qualidade aparece com baixa importância porque ela recebe influênc
 O PageRank mostrou-se uma excelente abordagem para analisar sistemas multivariados com forte interdependência.
 
 Em resumo, o PageRank nos ajudou a entender o “coração químico” do vinho — revelando quais variáveis mais conectam e influenciam todo o sistema.
+
+## Código
+=== "Code"
+```python 
+--8<-- "docs/PageRank/teste2.py"
+```

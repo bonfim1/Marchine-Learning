@@ -139,4 +139,5 @@ nav:
   - Metricas de Validação: ./metricas/main.md
   - Random Forest: ./random/main.md
   - PageRank: ./PageRank/main.md
+  - SVM: ./SVM/main.md
   - Projeto: ./projeto/main.md

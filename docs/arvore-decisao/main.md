@@ -1,3 +1,5 @@
+# Árvore de Decisão
+
 ## Exploração de dados
 O dataset utilizado foi o Wine Quality (red and white wines) disponível no Kaggle, contendo informações físico-químicas de 6.497 vinhos (tintos e brancos).
 Cada vinho possui variáveis como acidez, pH, açúcar residual, dióxido de enxofre, teor alcoólico e outros parâmetros laboratoriais.
